@@ -4,7 +4,7 @@ const DESCRIPTION = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Fusce tristique felis at fermentum pharetra.',
   'Aliquam id orci ut lectus varius viverra.',
   'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',];
-const CITY_NAMES = ['Moscow', 'Nevada', 'Minvody', 'Arhiz', 'USA'];
+const CITY_NAMES = ['Moscow', 'Nevada', 'Minvody', 'Arhiz', 'USA', 'Kazan','Orel', 'Voronezh', 'Dubai', 'Lych'];
 const POINTS_AMOUNT = {
   MIN: 3,
   MAX: 6
