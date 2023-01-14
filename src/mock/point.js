@@ -10,8 +10,8 @@ const generatePoint = (count) => {
       basePrice: getRandomInteger(1000, 10000),
       dateFrom: '2019-05-10T22:55:56.845Z',
       dateTo: '2019-05-11T11:22:13.375Z',
-      destination: getRandomInteger(1, 11),
-      id: getRandomInteger(0, 11),
+      destination: getRandomInteger(1, 5),
+      id: getRandomInteger(1, 5),
       offers: offersByType.find((elem) => elem.type === randType).offers,
       type: randType
     });
@@ -19,7 +19,7 @@ const generatePoint = (count) => {
   return array;
 };
 
-const points = generatePoint(10);
+export const points = generatePoint(10);
 
 const getRandomPoint = () => getRandomArrayElement(points);
 export { getRandomPoint };

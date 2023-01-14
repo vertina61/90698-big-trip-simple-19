@@ -3,10 +3,10 @@ import { destinations } from '../mock/destination.js';
 import { humanizeStartDataTime } from '../utils.js';
 
 function createEventTypeItemEditTemplate(offers) {
-  const elementEditTypes = offers.map((element) => `
+  const elementEditTypes = offers.map((elements) => `
   <div class="event__type-item"> 
-  <input id="event-type-${element.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.type}">
-  <label class="event__type-label  event__type-label--${element.type}" for="event-type-${element.type}-1">${element.type}</label>
+  <input id="event-type-${elements.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${elements.type}">
+  <label class="event__type-label  event__type-label--${elements.type}" for="event-type-${elements.type}-1">${elements.type}</label>
 </div>`).join('');
   return elementEditTypes;
 }
@@ -14,13 +14,13 @@ function createEventTypeItemEditTemplate(offers) {
 const chooseDestination = destinations.map((element) => `<option value="${element.name}"></option>`).join('');
 
 function createSectionOffersEditTemplate(type, offers) {
-  const elementEditOffers = offers.map((element) => `
+  const elementEditOffers = offers.map((elements) => `
   <div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name=${element.title} ${offers.includes(element.id) ? 'checked' : ''}>
+  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name=${elements.title} ${offers.includes(elements.id) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${type}-1">
-        <span class="event__offer-title">${element.title}</span>
+        <span class="event__offer-title">${elements.title}</span>
         &plus;&euro;&nbsp;
-        <span class="event__offer-price">${element.price}</span>
+        <span class="event__offer-price">${elements.price}</span>
       </label>
       </div>`).join('');
 
@@ -52,7 +52,7 @@ function createEditPointTemplate(point) {
       <label class="event__label  event__type-output" for="event-destination-1">
       ${type}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-1">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value='${pointDestination.name}' list="destination-list-1">
       <datalist id="destination-list-1">
       ${chooseDestination}
       </datalist>
