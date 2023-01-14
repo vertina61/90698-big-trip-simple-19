@@ -22,6 +22,10 @@ export default class ListPresenter {
   init() {
     this.#boardPoints = [...this.#pointsModel.points];
 
+    this.#renderBoard();
+  }
+
+  #renderBoard() {
     if (!this.#boardPoints.length) {
       render(this.#boardComponent, this.#boardContainer);
       render(new ListEmptyView(), this.#boardContainer);
@@ -72,6 +76,6 @@ export default class ListPresenter {
       document.removeEventListener('keydown', escKeyDownHandler);
     });
 
-    render(pointComponent, this.#taskListComponent.element);
+    render(pointComponent, this. #taskListComponent.element);
   }
 }
