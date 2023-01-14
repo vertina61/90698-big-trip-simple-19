@@ -19,4 +19,4 @@ const createDestinations = (count) => {
   return array;
 };
 
-export const destinations = createDestinations(10);
+export const destinations = createDestinations(5);

@@ -3,6 +3,7 @@ import ListView from '../view/list-view.js';
 import PointView from '../view/point-view.js';
 import EditPointView from '../view/edit-point-view.js';
 import SortView from '../view/sort-view.js';
+import ListEmptyView from '../view/list-empty-view.js';
 import {render} from '../render.js';
 
 export default class ListPresenter {
@@ -21,13 +22,17 @@ export default class ListPresenter {
   init() {
     this.#boardPoints = [...this.#pointsModel.points];
 
-    render(this.#boardComponent, this.#boardContainer);
-    render(new SortView(), this.#boardComponent.element);
-    render(this.#taskListComponent, this.#boardComponent.element);
-    //render(new EditPointView({point: this.#boardPoints[0]}), this.#taskListComponent.element);
+    if (!this.#boardPoints.length) {
+      render(this.#boardComponent, this.#boardContainer);
+      render(new ListEmptyView(), this.#boardContainer);
+    }
+    else {
+      render(new SortView(), this.#boardContainer);
+      render(this.#taskListComponent, this.#boardContainer);
 
-    for (let i = 0; i < this.#boardPoints.length; i++) {
-      this.#renderPoint(this.#boardPoints[i]);
+      for (let i = 0; i < this.#boardPoints.length; i++) {
+        this.#renderPoint(this.#boardPoints[i]);
+      }
     }
   }
 
@@ -56,7 +61,7 @@ export default class ListPresenter {
       document.addEventListener('keydown', escKeyDownHandler);
     });
 
-    pointEditComponent.element.querySelector('form').addEventListener('submit', (evt) => {
+    pointEditComponent.element.querySelector('.btn--blue').addEventListener('submit', (evt) => {
       evt.preventDefault();
       replaceFormToPoint();
       document.removeEventListener('keydown', escKeyDownHandler);
