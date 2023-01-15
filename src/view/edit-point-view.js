@@ -1,6 +1,6 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { destinations } from '../mock/destination.js';
-import { humanizeStartDataTime } from '../utils.js';
+import { humanizeStartDataTime } from '../utils/point.js';
 
 function createEventTypeItemEditTemplate(offers) {
   const elementEditTypes = offers.map((element) => `
@@ -97,27 +97,34 @@ function createEditPointTemplate(point) {
 </form>`;
 }
 
-export default class EditPointView {
-  #element = null;
+export default class EditPointView extends AbstractView {
   #point = null;
+  #handleFormSubmit = null;
+  handleFormClose = null;
 
-  constructor({point}) {
+  constructor({point, onFormSubmit, onFormClose}) {
+    super();
     this.#point = point;
+    this.#handleFormSubmit = onFormSubmit;
+    this.handleFormClose = onFormClose;
+
+    this.element.querySelector('.btn--blue')
+      .addEventListener('submit', this.#formSubmitHandler);
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#handleFormClose);
   }
 
   get template() {
     return createEditPointTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #handleFormClose = () => {
+    this.handleFormClose();
+  };
 }

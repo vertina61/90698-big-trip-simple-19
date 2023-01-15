@@ -1,6 +1,6 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { destinations } from '../mock/destination.js';
-import { humanizeStartDataTime } from '../utils.js';
+import { humanizeStartDataTime } from '../utils/point.js';
 
 function createEventTypeItemTemplate(offers) {
   const elementTypes = offers.map((element) => `
@@ -106,11 +106,11 @@ function createAddNewPointTemplate(point) {
 </form>`;
 }
 
-export default class AddNewPointView {
-  #element = null;
+export default class AddNewPointView extends AbstractView {
   #point = null;
 
   constructor({point}) {
+    super();
     this.#point = point;
   }
 
@@ -118,15 +118,4 @@ export default class AddNewPointView {
     return createAddNewPointTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
 }
