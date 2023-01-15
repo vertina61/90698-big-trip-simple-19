@@ -1,5 +1,5 @@
-import {createElement} from '../render.js';
-import { humanizeBigDate, humanizeStartTime } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import { humanizeBigDate, humanizeStartTime } from '../utils/point.js';
 import { destinations } from '../mock/destination.js';
 
 function createPointTemplate(point) {
@@ -52,27 +52,25 @@ function createPointTemplate(point) {
 </li>`;
 }
 
-export default class PointView {
-  #element = null;
+export default class PointView extends AbstractView {
   #point = null;
+  #handleEditClick = null;
 
-  constructor({point}) {
+  constructor({point, onEditClick}) {
+    super();
     this.#point = point;
+    this.#handleEditClick = onEditClick;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
   }
 
   get template() {
     return createPointTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 }

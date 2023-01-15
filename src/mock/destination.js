@@ -1,4 +1,4 @@
-import { getRandomArrayElement, getRandomInteger } from '../utils.js';
+import { getRandomArrayElement, getRandomInteger } from '../utils/common.js';
 import { DESCRIPTION, CITY_NAMES } from '../const.js';
 
 const createDestinations = (count) => {
