@@ -14,5 +14,16 @@ function humanizeStartTime(date) {
 function humanizeStartDataTime(date) {
   return date ? dayjs(date).format(DATE_FORMAT_TIME) : '';
 }
+function isPointSame(dueDate) {
+  return dueDate && dayjs().isSame(dueDate, 'D');
+}
 
-export {humanizeBigDate, humanizeStartTime, humanizeStartDataTime};
+function isPointAfter(dueDate) {
+  return dueDate && dayjs().isAfter(dueDate, 'D');
+}
+
+function isPointBefore(dueDate) {
+  return dueDate && dayjs().isBefore(dueDate, 'D');
+}
+
+export {humanizeBigDate, humanizeStartTime, humanizeStartDataTime, isPointAfter, isPointBefore, isPointSame};
