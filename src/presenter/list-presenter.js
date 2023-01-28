@@ -1,10 +1,9 @@
 import BoardView from '../view/board-view.js';
 import ListView from '../view/list-view.js';
-import PointView from '../view/point-view.js';
-import EditPointView from '../view/edit-point-view.js';
 import SortView from '../view/sort-view.js';
 import ListEmptyView from '../view/list-empty-view.js';
-import { render, replace } from '../framework/render.js';
+import { render, RenderPosition } from '../framework/render.js';
+import PointPresenter from '../presenter/point-presenter.js';
 
 export default class ListPresenter {
   #boardContainer = null;
@@ -14,6 +13,9 @@ export default class ListPresenter {
   #taskListComponent = new ListView();
   #boardPoints = [];
 
+  #sortComponent = new SortView();
+  #noPointComponent = new ListEmptyView();
+
   constructor({boardContainer, pointsModel}) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
@@ -22,58 +24,43 @@ export default class ListPresenter {
   init() {
     this.#boardPoints = [...this.#pointsModel.points];
 
-    this.#renderBoard();
+    this.#renderPointsList();
   }
 
-  #renderBoard() {
+  #renderSort() {
+    render(this.#sortComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderNoPoints() {
+    render(this.#noPointComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
+  }
+
+  #renderPoints(from, to) {
+    this.#boardPoints
+      .slice(from, to)
+      .forEach((task) => this.#renderPoint(task));
+  }
+
+  #renderPointsList() {
+    //render(this.#boardComponent, this.#boardContainer);
     if (!this.#boardPoints.length) {
-      render(this.#boardComponent, this.#boardContainer);
-      render(new ListEmptyView(), this.#boardContainer);
+      //render(this.#boardComponent, this.#boardContainer);
+      this.#renderNoPoints();
     }
     else {
-      render(new SortView(), this.#boardContainer);
+      this.#renderSort();
       render(this.#taskListComponent, this.#boardContainer);
 
-      for (let i = 0; i < this.#boardPoints.length; i++) {
-        this.#renderPoint(this.#boardPoints[i]);
-      }
+      //for (let i = 0; i < this.#boardPoints.length; i++) {
+       // this.#renderPoint(this.#boardPoints[i]);
+      //}
+      this.#renderPoints();
     }
   }
 
   #renderPoint(point) {
-
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceFormToPoint.call(this);
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
-
-    const pointComponent = new PointView({point,
-      onEditClick: () => {replacePointToForm.call(this);
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
-    });
-
-    const pointEditComponent = new EditPointView({point,
-      onFormSubmit: () => {replaceFormToPoint.call(this);
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
-      onFormClose: () => {
-        replaceFormToPoint.call(this);
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    });
-
-    function replacePointToForm () {
-      replace(pointEditComponent, pointComponent);
-    }
-
-    function replaceFormToPoint () {
-      replace(pointComponent, pointEditComponent);
-    }
-
-    render(pointComponent, this. #taskListComponent.element);
+    const pointPresenter = new PointPresenter({
+      pointListContainer: this.#taskListComponent.element});
+    pointPresenter.init(point);
   }
 }

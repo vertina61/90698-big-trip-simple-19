@@ -1,3 +1,4 @@
+import {nanoid} from 'nanoid';
 import { getRandomArrayElement, getRandomInteger } from '../utils/common.js';
 import { TYPES } from '../const.js';
 import { offersByType } from './offer.js';
@@ -21,5 +22,10 @@ const generatePoint = (count) => {
 
 const points = generatePoint(10);
 
-const getRandomPoint = () => getRandomArrayElement(points);
+function getRandomPoint () {
+  return {
+    id: nanoid(),
+    ...getRandomArrayElement(points)
+  };
+}
 export { getRandomPoint };
