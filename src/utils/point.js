@@ -26,4 +26,32 @@ function isPointBefore(dueDate) {
   return dueDate && dayjs().isBefore(dueDate, 'D');
 }
 
-export {humanizeBigDate, humanizeStartTime, humanizeStartDataTime, isPointAfter, isPointBefore, isPointSame};
+function getWeightForNullDate (dateA, dateB) {
+  if (dateA === null && dateB === null) {
+    return 0;
+  }
+
+  if (dateA === null) {
+    return 1;
+  }
+
+  if (dateB === null) {
+    return -1;
+  }
+
+  return null;
+}
+
+function sortPointDate (pointA, pointB) {
+  const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
+
+  return weight ?? dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+}
+
+function sortPointPrice (pointA, pointB) {
+  const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
+
+  return weight ?? pointB.basePrice - pointA.basePrice;
+}
+
+export {humanizeBigDate, humanizeStartTime, humanizeStartDataTime, isPointAfter, isPointBefore, isPointSame, sortPointDate, sortPointPrice};
