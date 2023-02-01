@@ -15,5 +15,10 @@ const FilterType = {
   FUTURE: 'future',
 };
 
-export {CITY_NAMES, DESCRIPTION, TYPES, POINTS_AMOUNT, FilterType};
+const SortType = {
+  DAY: 'day',
+  PRICE: 'price',
+};
+
+export {CITY_NAMES, DESCRIPTION, TYPES, POINTS_AMOUNT, FilterType, SortType};
 
