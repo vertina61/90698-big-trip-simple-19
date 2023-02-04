@@ -26,6 +26,10 @@ export default class ListPresenter {
     this.#pointsModel = pointsModel;
   }
 
+  get points() {
+    return this.#pointsModel.points;
+  }
+
   init() {
     this.#boardPoints = [...this.#pointsModel.points].sort(sortPointDateDown);
 
