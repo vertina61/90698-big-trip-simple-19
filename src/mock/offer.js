@@ -1,5 +1,6 @@
 import { getRandomInteger } from '../utils/common.js';
 
+
 const offersByType = [
   {
     type: 'taxi',
@@ -183,4 +184,6 @@ const offersByType = [
   },
 ];
 
+
 export { offersByType };
+

@@ -19,4 +19,7 @@ const createDestinations = (count) => {
   return array;
 };
 
+
 export const destinations = createDestinations(5);
+
+export const findDestination = (city) => destinations.find((destination) => destination.name === city);

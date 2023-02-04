@@ -26,7 +26,7 @@ function isPointBefore(dueDate) {
   return dueDate && dayjs().isBefore(dueDate, 'D');
 }
 
-function getWeightForNullDate (dateA, dateB) {
+const getWeightForNull = (dateA, dateB) => {
   if (dateA === null && dateB === null) {
     return 0;
   }
@@ -40,18 +40,17 @@ function getWeightForNullDate (dateA, dateB) {
   }
 
   return null;
-}
+};
 
-function sortPointDate (pointA, pointB) {
-  const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
+const sortPointDateDown = (pointA, pointB) => {
+  const weight = getWeightForNull(pointA.dateFrom, pointB.dateFrom);
 
   return weight ?? dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
-}
+};
 
-function sortPointPrice (pointA, pointB) {
-  const weight = getWeightForNullDate(pointA.dateFrom, pointB.dateFrom);
-
+const sortPointPriceDown = (pointA, pointB) => {
+  const weight = getWeightForNull(pointA.basePrice, pointB.basePrice);
   return weight ?? pointB.basePrice - pointA.basePrice;
-}
+};
 
-export {humanizeBigDate, humanizeStartTime, humanizeStartDataTime, isPointAfter, isPointBefore, isPointSame, sortPointDate, sortPointPrice};
+export {humanizeBigDate, humanizeStartTime, humanizeStartDataTime, isPointAfter, isPointBefore, isPointSame, sortPointDateDown, sortPointPriceDown};
