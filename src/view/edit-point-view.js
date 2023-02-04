@@ -2,6 +2,8 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { destinations } from '../mock/destination.js';
 import { humanizeStartDataTime } from '../utils/point.js';
 import { offersByType } from '../mock/offer.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 function getPicturesListTemplate(picture) {
   let template = '';
@@ -114,6 +116,8 @@ export default class EditPointView extends AbstractStatefulView {
   #handleButtonClick = null;
   #offers = null;
   #destination = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
 
   constructor({point, onFormSubmit, onFormButtonClick, offers, destination}) {
     super();
@@ -148,6 +152,8 @@ export default class EditPointView extends AbstractStatefulView {
 
     this.element.querySelector('.event__input--destination')
       .addEventListener('change', this.#destinationChangeHandler);
+
+      this.#setDatepicker();
 
   }
 
@@ -216,6 +222,54 @@ export default class EditPointView extends AbstractStatefulView {
     evt.preventDefault();
     this.#handleButtonClick();
   };
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
+
+  #setDatepicker() {
+    this.#datepickerFrom = flatpickr(
+      this.element.querySelector('.event-start-time'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        defaultDate: this._state.dateFrom,
+        onChange: this.#dateFromChangeHandler,
+      },
+    );
+    this.#datepickerTo = flatpickr(
+      this.element.querySelector('.event-end-time'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        defaultDate: this._state.dateTo,
+        minDate: this._state.dateFrom,
+        onChange: this.#dateToChangeHandler,
+      },
+    );
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
+    }
+  }
+
 
   static parsePointToState(point) {
     return {
