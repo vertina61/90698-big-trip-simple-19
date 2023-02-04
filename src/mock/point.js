@@ -22,10 +22,13 @@ const generatePoint = (count) => {
 
 const points = generatePoint(10);
 
+
 function getRandomPoint () {
   return {
     id: nanoid(),
     ...getRandomArrayElement(points)
   };
 }
+
+
 export { getRandomPoint };

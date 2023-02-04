@@ -18,7 +18,7 @@ export default class PointPresenter {
   #point = null;
   #mode = Mode.DEFAULT;
 
-  constructor({pointListContainer, onDataChange, onModeChange}) {
+  constructor({pointListContainer, onModeChange, onDataChange}) {
     this.#pointListContainer = pointListContainer;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
@@ -38,8 +38,8 @@ export default class PointPresenter {
     this.#pointEditComponent = new EditPointView({
       point: this.#point,
       onFormSubmit: this.#handleFormSubmit,
-      onFormClose: this.#handleFormSubmit
-    });
+      onFormButtonClick: this.#handleFormButtonClick
+    }, true);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this.#pointComponent, this.#pointListContainer);
@@ -58,15 +58,16 @@ export default class PointPresenter {
     remove(prevPointEditComponent);
   }
 
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
+      this.#replaceFormToPoint();
+    }
+  }
+
   destroy() {
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
-  }
-
-  resetView() {
-    if (this.#mode !== Mode.DEFAULT) {
-      this.#replaceFormToPoint();
-    }
   }
 
   #replacePointToForm() {
@@ -85,7 +86,9 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      this.#replaceFormToPoint.call(this);
+      this.#pointEditComponent.reset(this.#point);
+      //this.#replaceFormToPoint.call(this);
+      this.#replaceFormToPoint();
     }
   };
 
@@ -95,6 +98,11 @@ export default class PointPresenter {
 
   #handleFormSubmit = (point) => {
     this.#handleDataChange(point);
+    this.#replaceFormToPoint();
+  };
+
+  #handleFormButtonClick = () => {
+    this.#pointEditComponent.reset(this.#point);
     this.#replaceFormToPoint();
   };
 

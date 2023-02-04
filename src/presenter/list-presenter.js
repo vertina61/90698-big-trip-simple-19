@@ -6,20 +6,19 @@ import { render, RenderPosition } from '../framework/render.js';
 import PointPresenter from '../presenter/point-presenter.js';
 import { updateItem } from '../utils/common.js';
 import { SortType } from '../const.js';
-import { sortPointDate, sortPointPrice } from '../utils/point.js';
+import { sortPointPriceDown, sortPointDateDown } from '../utils/point.js';
 
 export default class ListPresenter {
   #boardContainer = null;
   #pointsModel = null;
 
   #boardComponent = new BoardView();
-  #taskListComponent = new ListView();
+  #pointListComponent = new ListView();
   #boardPoints = [];
 
   #sortComponent = null;
   #noPointComponent = new ListEmptyView();
   #pointPresenter = new Map();
-  #currentSortType = SortType.DAY;
   #sourcedBoardPoints = [];
 
   constructor({boardContainer, pointsModel}) {
@@ -28,9 +27,9 @@ export default class ListPresenter {
   }
 
   init() {
-    this.#boardPoints = [...this.#pointsModel.points];
+    this.#boardPoints = [...this.#pointsModel.points].sort(sortPointDateDown);
 
-    this.#sourcedBoardPoints = [...this.#pointsModel.points];
+    this.#sourcedBoardPoints = [...this.#pointsModel.points].sort(sortPointDateDown);
 
     this.#renderPointsList();
   }
@@ -47,34 +46,17 @@ export default class ListPresenter {
   };
 
   #sortPoints(sortType) {
-    // 2. Этот исходный массив задач необходим,
-    // потому что для сортировки мы будем мутировать
-    // массив в свойстве _boardTasks
-    switch (sortType) {
-      case SortType.DAY:
-        this.#boardPoints.sort(sortPointDate);
-        break;
-      case SortType.PRICE:
-        this.#boardPoints.sort(sortPointPrice);
-        break;
-      default:
-        // 3. А когда пользователь захочет "вернуть всё, как было",
-        // мы просто запишем в _boardTasks исходный массив
-        this.#boardPoints = [...this.#sourcedBoardPoints];
+    if (sortType === SortType.PRICE) {
+      this.#boardPoints.sort(sortPointPriceDown);
+    } else {
+      this.#boardPoints = [...this.#sourcedBoardPoints];
     }
-
-    this.#currentSortType = sortType;
   }
 
   #handleSortTypeChange = (sortType) => {
     // - Сортируем задачи
-    if (this.#currentSortType === sortType) {
-      return;
-    }
 
     this.#sortPoints(sortType);
-    // - Очищаем список
-    // - Рендерим список заново
     this.#clearPointList();
     this.#renderPointsList();
   };
@@ -82,7 +64,7 @@ export default class ListPresenter {
 
   #renderSort() {
     this.#sortComponent = new SortView({
-      onSortTypeChange: this.#handleSortTypeChange
+      onSortTypeChange: this.#handleSortTypeChange,
     });
 
     render(this.#sortComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
@@ -94,7 +76,7 @@ export default class ListPresenter {
 
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
-      pointListContainer: this.#taskListComponent.element,
+      pointListContainer: this.#pointListComponent.element,
       onDataChange: this.#handlePointChange,
       onModeChange: this.#handleModeChange});
     pointPresenter.init(point);
@@ -119,8 +101,8 @@ export default class ListPresenter {
       this.#renderNoPoints();
     }
     else {
-      this.#renderSort();
-      render(this.#taskListComponent, this.#boardContainer);
+      this.#renderSort(SortType.DAY);
+      render(this.#pointListComponent, this.#boardContainer);
 
       //for (let i = 0; i < this.#boardPoints.length; i++) {
       // this.#renderPoint(this.#boardPoints[i]);
