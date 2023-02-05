@@ -2,7 +2,7 @@ import BoardView from '../view/board-view.js';
 import ListView from '../view/list-view.js';
 import SortView from '../view/sort-view.js';
 import ListEmptyView from '../view/list-empty-view.js';
-import { render, RenderPosition } from '../framework/render.js';
+import { render, RenderPosition, remove } from '../framework/render.js';
 import PointPresenter from '../presenter/point-presenter.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
 import { sortPointPriceDown, sortPointDateDown } from '../utils/point.js';
@@ -59,22 +59,22 @@ export default class ListPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
+
         this.#pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
+        this.#clearBoard();
+        this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
+        this.#clearBoard({resetSortType: true});
+        this.#renderBoard();
         break;
     }
   };
 
 
   #handleSortTypeChange = (sortType) => {
-    // - Сортируем задачи
-
     this.#currentSortType = sortType;
     this.#clearBoard();
     this.#renderBoard();
@@ -83,6 +83,7 @@ export default class ListPresenter {
 
   #renderSort() {
     this.#sortComponent = new SortView({
+      currentSortType: this.#currentSortType,
       onSortTypeChange: this.#handleSortTypeChange,
     });
 
@@ -103,9 +104,16 @@ export default class ListPresenter {
     this.#pointPresenter.set(point.id, pointPresenter);
   }
 
-  #clearBoard() {
+  #clearBoard({resetSortType = false} = {}) {
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#noPointComponent);
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
   }
 
   #renderBoard() {
@@ -113,7 +121,7 @@ export default class ListPresenter {
     if (points.length === 0) {
       this.#renderNoPoints();
     } else {
-      this.#renderSort(SortType.DAY);
+      this.#renderSort(this.#currentSortType);
       render(this.#pointListComponent, this.#boardContainer);
       points.forEach((point) => {
         this.#renderPoint(point);
