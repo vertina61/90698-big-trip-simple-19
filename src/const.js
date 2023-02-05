@@ -41,5 +41,10 @@ const filterTypes = [
   }
 ];
 
-export {CITY_NAMES, DESCRIPTION, TYPES, POINTS_AMOUNT, FilterType, SortType, UserAction, UpdateType, filterTypes};
+const Keys = {
+  ESCAPE: 'Escape',
+  ESC: 'Esc'
+};
+
+export {CITY_NAMES, DESCRIPTION, TYPES, POINTS_AMOUNT, FilterType, SortType, UserAction, UpdateType, filterTypes, Keys};
 

@@ -4,6 +4,7 @@ import SortView from '../view/sort-view.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import { render, RenderPosition, remove } from '../framework/render.js';
 import PointPresenter from '../presenter/point-presenter.js';
+import NewPointPresenter from '../presenter/new-point-presenter.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortPointPriceDown, sortPointDateDown } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
@@ -19,13 +20,19 @@ export default class ListPresenter {
   #sortComponent = null;
   #noPointComponent = null;
   #pointPresenter = new Map();
+  #newPointPresenter = null;
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
-  constructor({boardContainer, pointsModel, filterModel}) {
+  constructor({boardContainer, pointsModel, filterModel, onNewEventDestroy}) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#newPointPresenter = new NewPointPresenter({
+      pointsListContainer: this.#boardComponent.element,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewEventDestroy
+    });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -48,8 +55,15 @@ export default class ListPresenter {
   }
 
   #handleModeChange = () => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   };
+
+  createEvent() {
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newPointPresenter.init();
+  }
 
   #handleViewAction = (actionType, updateType, update) => {
     switch (actionType) {
@@ -118,6 +132,7 @@ export default class ListPresenter {
   }
 
   #clearBoard({resetSortType = false} = {}) {
+    this.#newPointPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
 
