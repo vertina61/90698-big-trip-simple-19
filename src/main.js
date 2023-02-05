@@ -2,9 +2,11 @@ import {render} from './framework/render.js';
 import FilterView from './view/filter-view.js';
 import ListPresenter from './presenter/list-presenter.js';
 import PointsModel from './model/points-model.js';
+import FilterModel from './model/filter-model.js';
 import { generateFilter } from './mock/filter.js';
 
 const pointsModel = new PointsModel();
+const filterModel = new FilterModel();
 
 const sitePageElement = document.querySelector('.page-body');
 const siteHeaderElement = document.querySelector('.trip-main');
