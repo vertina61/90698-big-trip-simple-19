@@ -32,7 +32,7 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-const filters = [
+const filterTypes = [
   {
     name: FilterType.EVERYTHING
   },
@@ -41,5 +41,5 @@ const filters = [
   }
 ];
 
-export {CITY_NAMES, DESCRIPTION, TYPES, POINTS_AMOUNT, FilterType, SortType, UserAction, UpdateType, filters};
+export {CITY_NAMES, DESCRIPTION, TYPES, POINTS_AMOUNT, FilterType, SortType, UserAction, UpdateType, filterTypes};
 
