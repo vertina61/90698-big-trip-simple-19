@@ -4,7 +4,7 @@ import SortView from '../view/sort-view.js';
 import ListEmptyView from '../view/list-empty-view.js';
 import { render, RenderPosition, remove } from '../framework/render.js';
 import PointPresenter from '../presenter/point-presenter.js';
-import { SortType, UpdateType, UserAction } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortPointPriceDown, sortPointDateDown } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
 
@@ -17,9 +17,10 @@ export default class ListPresenter {
   #pointListComponent = new ListView();
 
   #sortComponent = null;
-  #noPointComponent = new ListEmptyView();
+  #noPointComponent = null;
   #pointPresenter = new Map();
   #currentSortType = SortType.DAY;
+  #filterType = FilterType.EVERYTHING;
 
   constructor({boardContainer, pointsModel, filterModel}) {
     this.#boardContainer = boardContainer;
@@ -31,9 +32,9 @@ export default class ListPresenter {
   }
 
   get points() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    const filteredPoints = filter[filterType](points);
+    const filteredPoints = filter[this.#filterType](points);
 
     if (this.#currentSortType === SortType.PRICE) {
       return filteredPoints.sort(sortPointPriceDown);
@@ -99,6 +100,10 @@ export default class ListPresenter {
   }
 
   #renderNoPoints() {
+    this.#noPointComponent = new ListEmptyView({
+      filterType: this.#filterType
+    });
+
     render(this.#noPointComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
   }
 
