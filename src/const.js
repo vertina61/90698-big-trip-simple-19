@@ -20,5 +20,31 @@ const SortType = {
   PRICE: 'price',
 };
 
-export {CITY_NAMES, DESCRIPTION, TYPES, POINTS_AMOUNT, FilterType, SortType};
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const filterTypes = [
+  {
+    name: FilterType.EVERYTHING
+  },
+  {
+    name: FilterType.FUTURE
+  }
+];
+
+const Keys = {
+  ESCAPE: 'Escape',
+  ESC: 'Esc'
+};
+
+export {CITY_NAMES, DESCRIPTION, TYPES, POINTS_AMOUNT, FilterType, SortType, UserAction, UpdateType, filterTypes, Keys};
 
