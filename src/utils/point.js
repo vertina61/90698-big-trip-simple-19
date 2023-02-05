@@ -53,4 +53,5 @@ const sortPointPriceDown = (pointA, pointB) => {
   return weight ?? pointB.basePrice - pointA.basePrice;
 };
 
+
 export {humanizeBigDate, humanizeStartTime, humanizeStartDataTime, isPointAfter, isPointBefore, isPointSame, sortPointDateDown, sortPointPriceDown};
