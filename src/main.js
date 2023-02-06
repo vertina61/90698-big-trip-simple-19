@@ -56,6 +56,9 @@ filterPresenter.init();
 listPresenter.init();
 destinationsModel.init();
 offersModel.init();
-pointsModel.init();
+pointsModel.init()
+  .finally(() => {
+    render(newEventButtonComponent, siteHeaderElement);
+  });
 
 
