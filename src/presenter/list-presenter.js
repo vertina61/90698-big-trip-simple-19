@@ -8,13 +8,17 @@ import NewPointPresenter from '../presenter/new-point-presenter.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortPointPriceDown, sortPointDateDown } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
+import LoadingView from '../view/loading-view.js';
 
 export default class ListPresenter {
   #boardContainer = null;
   #pointsModel = null;
   #filterModel = null;
+  #destinationsModel = null;
+  #offersModel = null;
 
   #boardComponent = new BoardView();
+  #loadingComponent = new LoadingView();
   #pointListComponent = new ListView();
 
   #sortComponent = null;
@@ -23,11 +27,14 @@ export default class ListPresenter {
   #newPointPresenter = null;
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
-  constructor({boardContainer, pointsModel, filterModel, onNewEventDestroy}) {
+  constructor({boardContainer, pointsModel, filterModel, destinationsModel, offersModel, onNewEventDestroy}) {
     this.#boardContainer = boardContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
     this.#newPointPresenter = new NewPointPresenter({
       pointsListContainer: this.#boardComponent.element,
       onDataChange: this.#handleViewAction,
@@ -48,6 +55,14 @@ export default class ListPresenter {
     }
 
     return filteredPoints.sort(sortPointDateDown);
+  }
+
+  get destinations() {
+    return this.#destinationsModel.destinations;
+  }
+
+  get offers() {
+    return this.#offersModel.offers;
   }
 
   init() {
@@ -93,6 +108,11 @@ export default class ListPresenter {
         this.#clearBoard({resetSortType: true});
         this.#renderBoard();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   };
 
@@ -122,13 +142,17 @@ export default class ListPresenter {
   }
 
 
-  #renderPoint(point) {
+  #renderPoint(point, destinations, offers) {
     const pointPresenter = new PointPresenter({
       pointListContainer: this.#pointListComponent.element,
       onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange});
-    pointPresenter.init(point);
+    pointPresenter.init(point, destinations, offers);
     this.#pointPresenter.set(point.id, pointPresenter);
+  }
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
   }
 
   #clearBoard({resetSortType = false} = {}) {
@@ -137,6 +161,7 @@ export default class ListPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
     remove(this.#noPointComponent);
 
     if (resetSortType) {
@@ -146,14 +171,19 @@ export default class ListPresenter {
 
   #renderBoard() {
     const points = this.points;
-    if (points.length === 0) {
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
+     if (this.points.length === 0 || this.destinations.length === 0 || this.offers.length === 0) {
       this.#renderNoPoints();
     } else {
       this.#renderSort(this.#currentSortType);
       render(this.#pointListComponent, this.#boardContainer);
-      points.forEach((point) => {
-        this.#renderPoint(point);
-      });
+      this.points.forEach((point) => this.#renderPoint(point, this.destinations, this.offers));
+      };
     }
   }
-}
+
