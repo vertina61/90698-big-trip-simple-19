@@ -43,5 +43,6 @@ render(newEventButtonComponent, siteHeaderElement);
 
 filterPresenter.init();
 listPresenter.init();
+pointsModel.init();
 
 
