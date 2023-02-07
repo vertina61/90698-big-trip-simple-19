@@ -5,11 +5,12 @@ import { offersByType } from '../mock/offer.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
+import { TYPES } from '../const.js';
 
-function getPicturesListTemplate(picture) {
+function getPicturesListTemplate(pointDestination) {
   let template = '';
-  if (picture) {
-    template = picture.pictures.map((elem) => `<img class="event__photo" src=${elem.src} alt="${elem.description}">`
+  if (pointDestination) {
+    template = pointDestination.pictures.map((elem) => `<img class="event__photo" src=${elem.src} alt="${elem.description}">`
     ).join('');
   }
   return template;
@@ -24,10 +25,10 @@ function createEventTypeItemEditTemplate(offers) {
   return elementEditTypes;
 }
 
-function createSectionOffersEditTemplate(offers, offer) {
+function createSectionOffersEditTemplate(offerTypes, offer, type) {
   let template = '';
-  if (offers) {
-    template = offers.offers.map((elem) => (
+  if (offerTypes) {
+    template = offerTypes.offers.map((elem) => (
       `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${elem.type}-${elem.id}" type="checkbox" name=${elem.title} data-offer-id="${elem.id}" ${offer.includes(elem.id) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${elem.type}-${elem.id}">
@@ -289,9 +290,12 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   static parseStateToPoint(state) {
-    return {
-      ...state
-    };
+    const point = {...state};
+
+    delete point.allOffersByType;
+    delete point.destinations;
+
+    return point;
   }
 
 }

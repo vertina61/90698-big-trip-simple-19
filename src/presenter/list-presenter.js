@@ -77,7 +77,7 @@ export default class ListPresenter {
   createEvent() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#newPointPresenter.init();
+    this.#newPointPresenter.init(this.destinations, this.offers);
   }
 
   #handleViewAction = (actionType, updateType, update) => {
