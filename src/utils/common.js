@@ -8,5 +8,10 @@ const getRandomInteger = (a = 0,b = 1)=>{
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+const getCities = (destinations) => {
+  const cities = [];
+  destinations.map((destination) => cities.push(destination.name));
+  return cities;
+};
 
-export {getRandomArrayElement, getRandomInteger};
+export {getRandomArrayElement, getRandomInteger, getCities};
