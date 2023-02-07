@@ -47,5 +47,10 @@ const Keys = {
   ESC: 'Esc'
 };
 
-export {CITY_NAMES, DESCRIPTION, TYPES, POINTS_AMOUNT, FilterType, SortType, UserAction, UpdateType, filterTypes, Keys};
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
+export {TimeLimit, CITY_NAMES, DESCRIPTION, TYPES, POINTS_AMOUNT, FilterType, SortType, UserAction, UpdateType, filterTypes, Keys};
 

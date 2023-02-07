@@ -1,7 +1,7 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
-import {nanoid} from 'nanoid';
 import {UserAction, UpdateType, Keys} from '../const.js';
 import EditPointView from '../view/edit-point-view.js';
+import {getCities} from '../utils/common.js';
 
 export default class NewPointPresenter {
   #pointsListContainer = null;
@@ -20,12 +20,14 @@ export default class NewPointPresenter {
   init(destinations, offers) {
     this.#destinations = destinations;
     this.#offers = offers;
+    const cities = getCities(this.#destinations);
     if (this.#pointEditComponent !== null) {
       return;
     }
 
     this.#pointEditComponent = new EditPointView({
       destinations: this.#destinations,
+      cities: cities,
       offersByType: this.#offers,
       onFormSubmit: this.#handleFormSubmit,
       onDeleteClick: this.#handleDeleteClick
@@ -50,13 +52,30 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#pointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (point) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      // Пока у нас нет сервера, который бы после сохранения
-      // выдывал честный id задачи, нам нужно позаботиться об этом самим
-      {id: nanoid(), ...point},
+      point,
     );
     this.destroy();
   };
