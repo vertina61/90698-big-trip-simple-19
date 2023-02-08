@@ -149,7 +149,7 @@ export default class ListPresenter {
   #renderSort() {
     this.#sortComponent = new SortView({
       currentSortType: this.#currentSortType,
-      onSortTypeChange: this.#handleSortTypeChange,
+      onSortTypeChange: this.#handleSortTypeChange
     });
 
     render(this.#sortComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
