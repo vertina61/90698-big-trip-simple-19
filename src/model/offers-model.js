@@ -8,9 +8,6 @@ export default class OffersModel extends Observable {
     super();
     this.#pointsApiService = pointsApiService;
 
-    /*this.#pointsApiService.offers.then((offers) => {
-      console.log(offers);
-    });*/
   }
 
   get offers() {

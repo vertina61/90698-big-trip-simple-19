@@ -5,6 +5,7 @@ import 'flatpickr/dist/flatpickr.min.css';
 import { TYPES } from '../const.js';
 import { findDestination } from '../utils/common.js';
 
+
 const BLANK_FORM = {
   basePrice: 1500,
   dateFrom: new Date(),
@@ -19,6 +20,8 @@ const findOffers = (typeOfPoint, offersByType) => {
   const foundOffersType = offersByType.find((item) => item.type === typeOfPoint);
   return foundOffersType ? foundOffersType.offers : [];
 };
+
+const getDestinationId = (city, destinations) => destinations.find((destination) => destination.name === city).id;
 
 const createEventListTemplate = (type, types) => (
   `<div class="event__type-list">
@@ -53,6 +56,7 @@ const createOffersTemplate = (offers, checkedOffers, isDisabled) => {
     return '';
   }
 };
+
 const createPhotosTemplate = (photos) => {
   if (photos.length > 0) {
     return (
@@ -65,8 +69,6 @@ const createPhotosTemplate = (photos) => {
     return '';
   }
 };
-
-const getDestinationId = (city, destinations) => destinations.find((destination) => destination.name === city).id;
 
 const createDestinationTemplate = (destination) => {
   const photos = destination.pictures;
@@ -84,8 +86,19 @@ const createDestinationTemplate = (destination) => {
   }
 };
 
-function createEditPointTemplate(point, showButton) {
-  const {basePrice, dateFrom, dateTo, offers, type, destination, destinations, cities, allOffersByType, isDisabled, isSaving,
+const createEditFormTemplate = (point, showButton) => {
+  const {
+    basePrice,
+    dateFrom,
+    dateTo,
+    offers,
+    type,
+    destination,
+    destinations,
+    cities,
+    allOffersByType,
+    isDisabled,
+    isSaving,
     isDeleting} = point;
   const destinationOfPoint = findDestination(destination, destinations);
   const offersTemplate = createOffersTemplate(allOffersByType, offers, isDisabled);
@@ -137,8 +150,9 @@ function createEditPointTemplate(point, showButton) {
             ${destinationTemplate}
           </section>
         </form>
-    </li>`);
-}
+    </li>`
+  );
+};
 
 export default class EditPointView extends AbstractStatefulView {
   #handleFormSubmit = null;
@@ -181,7 +195,7 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditPointTemplate(this._state, this.#showButton);
+    return createEditFormTemplate(this._state, this.#showButton);
   }
 
   removeElement() {
@@ -237,6 +251,7 @@ export default class EditPointView extends AbstractStatefulView {
         minuteIncrement: 1
       }
     );
+
     this.#datePickerTo = flatpickr(
       this.element.querySelector('#event-end-time-1'),
       {
@@ -271,7 +286,6 @@ export default class EditPointView extends AbstractStatefulView {
     delete point.isDisabled;
     delete point.isSaving;
     delete point.isDeleting;
-
     return point;
   }
 

@@ -33,9 +33,7 @@ export default class NewPointPresenter {
       onDeleteClick: this.#handleDeleteClick
     },
     false);
-
     render(this.#pointEditComponent, this.#pointsListContainer, RenderPosition.AFTERBEGIN);
-
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
@@ -43,12 +41,9 @@ export default class NewPointPresenter {
     if (this.#pointEditComponent === null) {
       return;
     }
-
     this.#handleDestroy();
-
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
-
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
@@ -77,7 +72,6 @@ export default class NewPointPresenter {
       UpdateType.MINOR,
       point,
     );
-    this.destroy();
   };
 
   #handleDeleteClick = () => {

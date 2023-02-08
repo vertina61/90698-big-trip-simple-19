@@ -8,20 +8,16 @@ const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
 };
-
 export default class PointPresenter {
   #pointListContainer = null;
   #handleDataChange = null;
   #handleModeChange = null;
-
   #pointComponent = null;
   #pointEditComponent = null;
-
   #point = null;
   #mode = Mode.DEFAULT;
   #destinations = [];
   #offers = [];
-
   constructor({pointListContainer, onModeChange, onDataChange}) {
     this.#pointListContainer = pointListContainer;
     this.#handleDataChange = onDataChange;
@@ -32,18 +28,15 @@ export default class PointPresenter {
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offers;
-
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
     const cities = getCities(this.#destinations);
-
     this.#pointComponent = new PointView({
       point: this.#point,
       destinations: this.#destinations,
       offersByType: this.#offers,
       onEditClick: this.#handleEditClick
     });
-
     this.#pointEditComponent = new EditPointView({
       point: this.#point,
       destinations: this.#destinations,
@@ -53,12 +46,10 @@ export default class PointPresenter {
       onFormSubmit: this.#handleFormSubmit,
       onFormButtonClick: this.#handleFormButtonClick
     }, true);
-
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this.#pointComponent, this.#pointListContainer);
       return;
     }
-
     if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
@@ -165,5 +156,4 @@ export default class PointPresenter {
     this.#pointEditComponent.reset(this.#point);
     this.#replaceFormToPoint();
   };
-
 }
