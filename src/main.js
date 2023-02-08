@@ -50,15 +50,16 @@ function handleNewEventButtonClick() {
   newEventButtonComponent.element.disabled = true;
 }
 
-render(newEventButtonComponent, siteHeaderElement);
-
+Promise.all([
+  offersModel.init(),
+  destinationsModel.init(),
+  pointsModel.init()
+]).finally(() => {
+  render(newEventButtonComponent, siteHeaderElement);
+});
 filterPresenter.init();
-listPresenter.init();
-destinationsModel.init();
-offersModel.init();
-pointsModel.init()
-  .finally(() => {
-    render(newEventButtonComponent, siteHeaderElement);
-  });
 
+//render(newEventButtonComponent, siteHeaderElement);
+
+listPresenter.init();
 
